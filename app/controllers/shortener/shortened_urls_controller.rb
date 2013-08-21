@@ -17,8 +17,19 @@ class Shortener::ShortenedUrlsController < ActionController::Base
         sl.increment!(:use_count)
         ActiveRecord::Base.connection.close
       end
+
+      if query = request.query_string
+        if sl.url.match(/\?/)
+          url = "#{sl.url}&#{query}"
+        else
+          url = "#{sl.url}?#{query}"
+        end
+      else
+        url = sl.url
+      end
+
       # do a 301 redirect to the destination url
-      redirect_to sl.url, :status => :moved_permanently
+      redirect_to url, :status => :moved_permanently
     else
       # if we don't find the shortened link, redirect to the root
       # make this configurable in future versions
