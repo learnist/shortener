@@ -1,7 +1,8 @@
 class Shortener::ShortenedUrl < ActiveRecord::Base
 
   URL_PROTOCOL_HTTP = "http://"
-  REGEX_LINK_HAS_PROTOCOL = Regexp.new('\Ahttp:\/\/|\Ahttps:\/\/', Regexp::IGNORECASE)
+  REGEX_LINK_HAS_NORMAL_PROTOCOL = Regexp.new('\Ahttp:\/\/|\Ahttps:\/\/', Regexp::IGNORECASE)
+  REGEX_LINK_HAS_ITMS_PROTOCOL = Regexp.new('\Aitms-services:\/\/', Regexp::IGNORECASE)
 
   validates :url, :presence => true
 
@@ -11,7 +12,9 @@ class Shortener::ShortenedUrl < ActiveRecord::Base
   # ensure the url starts with it protocol and is normalized
   def self.clean_url(url)
     return nil if url.blank?
-    url = URL_PROTOCOL_HTTP + url.strip unless url =~ REGEX_LINK_HAS_PROTOCOL
+    return url if url =~ REGEX_LINK_HAS_ITMS_PROTOCOL
+
+    url = URL_PROTOCOL_HTTP + url.strip unless url =~ REGEX_LINK_HAS_NORMAL_PROTOCOL
     URI.parse(url).normalize.to_s
   end
 
