@@ -2,7 +2,7 @@ class Shortener::ShortenedUrl < ActiveRecord::Base
 
   URL_PROTOCOL_HTTP = "http://"
   REGEX_LINK_HAS_NORMAL_PROTOCOL = Regexp.new('\Ahttp:\/\/|\Ahttps:\/\/', Regexp::IGNORECASE)
-  REGEX_LINK_HAS_ITMS_PROTOCOL = Regexp.new('\Aitms-services:\/\/', Regexp::IGNORECASE)
+  REGEX_LINK_HAS_ITMS_PROTOCOL = Regexp.new('itms-services:\/\/', Regexp::IGNORECASE)
 
   validates :url, :presence => true
 
